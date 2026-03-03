@@ -131,7 +131,8 @@ export default function CinematicIntro({ onDone }: IntroProps) {
             ctx.translate(x, y);
             ctx.rotate(angle);
             if (flipX) ctx.scale(-1, 1);
-            ctx.scale(scale * (w / 1440), scale * (w / 1440));
+            const mobileScale = w < 640 ? 0.7 : 1;
+            ctx.scale(scale * (w / 1440) * mobileScale, scale * (w / 1440) * mobileScale);
 
             ctx.shadowBlur = 30;
             ctx.shadowColor = glowColor;
@@ -307,7 +308,7 @@ export default function CinematicIntro({ onDone }: IntroProps) {
                         const a = Math.max(0, 0.65 - eT * 0.45 - i * 0.15);
                         const colors = ['rgba(255,107,53,', 'rgba(147,51,234,', 'rgba(255,220,50,'];
                         ctx.strokeStyle = `${colors[i]}${a})`;
-                        ctx.lineWidth = 4 - i;
+                        ctx.lineWidth = (4 - i) * (w < 640 ? 0.6 : 1);
                         ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
                     });
                 }

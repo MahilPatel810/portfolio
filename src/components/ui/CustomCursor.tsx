@@ -1,11 +1,18 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function CustomCursor() {
     const dotRef = useRef<HTMLDivElement>(null);
     const ringRef = useRef<HTMLDivElement>(null);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
+        // Only enable custom cursor on non-touch devices
+        if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+            return;
+        }
+
+        setIsVisible(true);
         const dot = dotRef.current!;
         const ring = ringRef.current!;
         let ringX = 0, ringY = 0;
@@ -19,6 +26,7 @@ export default function CustomCursor() {
         window.addEventListener('mousemove', onMove);
 
         const tick = () => {
+            if (!dot || !ring) return;
             ringX += (dotX - ringX) * 0.12;
             ringY += (dotY - ringY) * 0.12;
             dot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
@@ -28,10 +36,12 @@ export default function CustomCursor() {
         tick();
 
         const onEnter = () => {
+            if (!ring) return;
             ring.style.transform += ' scale(1.8)';
             ring.style.borderColor = '#00d4ff';
         };
         const onLeave = () => {
+            if (!ring) return;
             ring.style.borderColor = '#9333ea';
         };
 
@@ -46,6 +56,8 @@ export default function CustomCursor() {
             window.removeEventListener('mousemove', onMove);
         };
     }, []);
+
+    if (!isVisible) return null;
 
     return (
         <>

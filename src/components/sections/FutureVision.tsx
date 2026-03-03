@@ -74,7 +74,7 @@ function VisionCard({ item, index }: { item: typeof VISION_ITEMS[0]; index: numb
             onMouseLeave={handleMouseLeave}
             style={{
                 position: 'relative',
-                background: 'rgba(10, 0, 28, 0.78)',
+                background: 'var(--glass-bg)',
                 backdropFilter: 'blur(22px)',
                 WebkitBackdropFilter: 'blur(22px)',
                 border: `1px solid ${item.color}30`,
@@ -83,7 +83,7 @@ function VisionCard({ item, index }: { item: typeof VISION_ITEMS[0]; index: numb
                 overflow: 'hidden',
                 cursor: 'default',
                 transition: 'transform 0.15s ease, box-shadow 0.4s ease',
-                boxShadow: `0 0 25px ${item.glow}20, 0 8px 32px rgba(0,0,0,0.5)`,
+                boxShadow: `0 0 25px ${item.glow}20, 0 8px 32px rgba(0,0,0,0.3)`,
             }}
             whileHover={{ scale: 1.01 }}
         >
@@ -308,10 +308,10 @@ export default function FutureVision() {
                         textAlign: 'center',
                         marginTop: 56,
                         padding: '28px 32px',
-                        background: 'rgba(10,0,28,0.6)',
+                        background: 'var(--glass-bg)',
                         backdropFilter: 'blur(16px)',
                         borderRadius: 18,
-                        border: '1px solid rgba(147,51,234,0.2)',
+                        border: '1px solid var(--glass-border)',
                         boxShadow: '0 0 40px rgba(147,51,234,0.08)',
                     }}
                 >

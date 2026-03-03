@@ -32,7 +32,6 @@ export default function Home() {
       {/* Click ripple global style */}
       <style>{`
         @keyframes rippleEffect { 0%{transform:scale(0);opacity:0.6} 100%{transform:scale(4);opacity:0} }
-        body { cursor: none; }
       `}</style>
 
       {/* Cinematic Intro */}

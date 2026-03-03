@@ -16,10 +16,11 @@ const FloatingIcon = ({ icon, x, y, delay }: { icon: string; x: string; y: strin
         transition={{ duration: 4 + delay, repeat: Infinity, delay, ease: 'easeInOut' }}
         style={{
             position: 'absolute', left: x, top: y,
-            fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
+            fontSize: 'clamp(1rem, 3vw, 2.5rem)',
             filter: 'drop-shadow(0 0 12px rgba(147,51,234,0.8))',
             pointerEvents: 'none',
             userSelect: 'none',
+            zIndex: 1,
         }}
     >
         {icon}
@@ -136,7 +137,7 @@ export default function Hero() {
                     style={{
                         fontFamily: "'Outfit', sans-serif",
                         fontWeight: 900,
-                        fontSize: 'clamp(3rem, 9vw, 7rem)',
+                        fontSize: 'clamp(2.5rem, 12vw, 7rem)',
                         lineHeight: 1.0,
                         marginBottom: 12,
                         background: 'linear-gradient(135deg, #fff 0%, #d8b4fe 30%, #9333ea 60%, #00d4ff 100%)',
@@ -196,6 +197,7 @@ export default function Hero() {
                             boxShadow: '0 0 25px rgba(147,51,234,0.6)',
                             transition: 'transform 0.2s ease, box-shadow 0.3s ease',
                             letterSpacing: '0.04em',
+                            width: 'min(100%, 260px)',
                         }}
                         className="light-sweep-btn"
                     >
@@ -222,6 +224,7 @@ export default function Hero() {
                             transition: 'transform 0.2s ease, background 0.3s ease, box-shadow 0.3s ease',
                             backdropFilter: 'blur(10px)',
                             letterSpacing: '0.04em',
+                            width: 'min(100%, 260px)',
                         }}
                         onMouseEnter={e => {
                             (e.target as HTMLButtonElement).style.background = 'rgba(147,51,234,0.15)';

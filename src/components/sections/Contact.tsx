@@ -37,6 +37,20 @@ export default function Contact() {
     const ref = useRef(null);
     const inView = useInView(ref, { once: true });
 
+    const handleTouchStart = (e: React.TouchEvent<HTMLAnchorElement>) => {
+        const card = e.currentTarget;
+        card.style.transform = 'translateY(-12px) scale(1.02)';
+        card.style.boxShadow = `0 20px 50px ${card.dataset.glow}`;
+        card.style.borderColor = card.dataset.color || '';
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent<HTMLAnchorElement>) => {
+        const card = e.currentTarget;
+        card.style.transform = '';
+        card.style.boxShadow = '';
+        card.style.borderColor = 'rgba(147,51,234,0.2)';
+    };
+
     return (
         <section
             id="contact"
@@ -88,6 +102,10 @@ export default function Contact() {
                                 borderColor: c.color,
                             }}
                             whileTap={{ scale: 0.97 }}
+                            onTouchStart={handleTouchStart}
+                            onTouchEnd={handleTouchEnd}
+                            data-color={c.color}
+                            data-glow={c.glow}
                             style={{
                                 display: 'flex',
                                 flexDirection: 'column',
@@ -101,9 +119,10 @@ export default function Contact() {
                                 textDecoration: 'none',
                                 color: 'var(--text-primary)',
                                 cursor: 'pointer',
-                                transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
+                                transition: 'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
                                 position: 'relative',
                                 overflow: 'hidden',
+                                touchAction: 'manipulation'
                             }}
                         >
                             {/* Background glow on hover */}

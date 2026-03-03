@@ -66,15 +66,25 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
     const inView = useInView(ref, { once: true, margin: '-80px' });
     const [flipped, setFlipped] = useState(false);
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
         if (flipped) return;
         const card = e.currentTarget;
         const rect = card.getBoundingClientRect();
-        const x = (e.clientX - rect.left - rect.width / 2) / 10;
-        const y = (e.clientY - rect.top - rect.height / 2) / 10;
+        let clientX, clientY;
+
+        if ('touches' in e) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+
+        const x = (clientX - rect.left - rect.width / 2) / 10;
+        const y = (clientY - rect.top - rect.height / 2) / 10;
         card.style.transform = `perspective(900px) rotateX(${-y}deg) rotateY(${x}deg) scale(1.04)`;
     };
-    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
         if (flipped) return;
         e.currentTarget.style.transform = '';
     };
@@ -109,6 +119,8 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
                 onClick={() => setFlipped(f => !f)}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
+                onTouchMove={handleMouseMove}
+                onTouchEnd={handleMouseLeave}
                 style={{
                     position: 'relative',
                     transformStyle: 'preserve-3d',
@@ -116,6 +128,7 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
                     transform: flipped ? 'rotateY(180deg)' : '',
                     cursor: 'pointer',
                     borderRadius: 20,
+                    touchAction: 'none'
                 }}
             >
                 {/* Front */}
@@ -124,13 +137,13 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
                         position: 'relative',
                         backfaceVisibility: 'hidden',
                         WebkitBackfaceVisibility: 'hidden',
-                        background: 'rgba(10,0,28,0.78)',
+                        background: 'var(--glass-bg)',
                         backdropFilter: 'blur(20px)',
                         WebkitBackdropFilter: 'blur(20px)',
                         border: `1px solid ${project.color}33`,
                         borderRadius: 20,
                         padding: 'clamp(24px, 3vw, 36px)',
-                        boxShadow: `0 0 20px ${project.glow}22, 0 8px 32px rgba(0,0,0,0.5)`,
+                        boxShadow: `0 0 20px ${project.glow}22, 0 8px 32px rgba(0,0,0,0.3)`,
                     }}
                 >
                     {/* Glow top border */}
@@ -292,7 +305,7 @@ export default function Projects() {
 
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
                     gap: 28,
                 }}>
                     {projects.map((p, i) => (

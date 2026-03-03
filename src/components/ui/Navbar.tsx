@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, Menu, X } from 'lucide-react';
-import LogoMK from '@/components/ui/LogoMK';
 
 const navLinks = ['Home', 'About', 'Skills', 'Projects', 'Contact', 'Vision'];
 
@@ -46,17 +45,17 @@ export default function Navbar() {
 
     return (
         <motion.nav
-            initial={{ y: -80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
+            initial={{ y: -80, x: '-50%', opacity: 0 }}
+            animate={{ y: 0, x: '-50%', opacity: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
             style={{
                 position: 'fixed',
                 top: 16,
                 left: '50%',
-                transform: 'translateX(-50%)',
                 zIndex: 1000,
-                width: '95%',
+                width: scrolled ? '90%' : '95%',
                 maxWidth: 900,
+                transition: 'width 0.5s cubic-bezier(0.16, 1, 0.3, 1), top 0.5s ease',
             }}
         >
             <div
@@ -65,66 +64,99 @@ export default function Navbar() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    padding: '12px 24px',
-                    boxShadow: scrolled ? '0 8px 32px rgba(108,43,217,0.3)' : '0 4px 20px rgba(108,43,217,0.15)',
-                    transition: 'box-shadow 0.4s ease',
-                    borderRadius: 16,
+                    padding: scrolled ? '8px 20px' : '14px 24px',
+                    boxShadow: scrolled ? '0 10px 40px rgba(108,43,217,0.35)' : '0 4px 20px rgba(108,43,217,0.1)',
+                    transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                    borderRadius: 20,
+                    position: 'relative',
+                    overflow: 'visible'
                 }}
             >
-                {/* Logo */}
-                <motion.div
-                    whileHover={{ scale: 1.08 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => scrollTo('home')}
-                    style={{ cursor: 'pointer' }}
-                >
-                    <LogoMK size={44} showText={false} />
-                </motion.div>
-
-                {/* Desktop Links */}
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }} className="hidden-mobile">
-                    {navLinks.map(link => (
-                        <motion.button
-                            key={link}
-                            onClick={() => scrollTo(link)}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                {/* Center Gradient Glow (only at top) */}
+                <AnimatePresence>
+                    {!scrolled && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                             style={{
-                                position: 'relative',
-                                background: 'none',
-                                border: 'none',
-                                color: active === link ? '#9333ea' : 'var(--text-primary)',
-                                fontFamily: "'Outfit', sans-serif",
-                                fontWeight: 500,
-                                fontSize: '0.9rem',
-                                padding: '6px 14px',
-                                cursor: 'pointer',
-                                borderRadius: 8,
-                                transition: 'color 0.3s ease',
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: '150px',
+                                height: '150px',
+                                background: 'radial-gradient(circle, rgba(147,51,234,0.15) 0%, transparent 70%)',
+                                pointerEvents: 'none',
+                                zIndex: -1,
                             }}
-                        >
-                            {link}
-                            {active === link && (
-                                <motion.span
-                                    layoutId="navUnderline"
-                                    style={{
-                                        position: 'absolute',
-                                        bottom: 0,
-                                        left: '10%',
-                                        width: '80%',
-                                        height: 2,
-                                        background: 'linear-gradient(90deg, #9333ea, #00d4ff)',
-                                        borderRadius: 99,
-                                        boxShadow: '0 0 8px rgba(147,51,234,0.8)',
-                                    }}
-                                />
-                            )}
-                        </motion.button>
-                    ))}
+                        />
+                    )}
+                </AnimatePresence>
+
+                {/* Empty spacer to maintain layout balance when scrolled */}
+                {scrolled && <div style={{ width: 40 }} className="hidden-mobile" />}
+
+                {/* Desktop Links (Always present, revealed on scroll or if at top) */}
+                <div style={{ flex: 1, display: 'flex', justifyContent: scrolled ? 'center' : 'center' }}>
+                    <AnimatePresence>
+                        {(scrolled || !scrolled) && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                style={{ display: 'flex', gap: 4, alignItems: 'center' }}
+                                className="hidden-mobile"
+                            >
+                                {navLinks.map(link => (
+                                    <motion.button
+                                        key={link}
+                                        onClick={() => scrollTo(link)}
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        style={{
+                                            position: 'relative',
+                                            background: 'none',
+                                            border: 'none',
+                                            color: active === link ? '#9333ea' : 'var(--text-primary)',
+                                            fontFamily: "'Outfit', sans-serif",
+                                            fontWeight: 500,
+                                            fontSize: '0.9rem',
+                                            padding: '6px 14px',
+                                            cursor: 'pointer',
+                                            borderRadius: 8,
+                                            transition: 'color 0.3s ease',
+                                        }}
+                                    >
+                                        {link}
+                                        {active === link && (
+                                            <motion.span
+                                                layoutId="navUnderline"
+                                                style={{
+                                                    position: 'absolute',
+                                                    bottom: 0,
+                                                    left: '10%',
+                                                    width: '80%',
+                                                    height: 2,
+                                                    background: 'linear-gradient(90deg, #9333ea, #00d4ff)',
+                                                    borderRadius: 99,
+                                                    boxShadow: '0 0 8px rgba(147,51,234,0.8)',
+                                                }}
+                                            />
+                                        )}
+                                    </motion.button>
+                                ))}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
 
                 {/* Right: theme toggle + mobile menu */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    zIndex: 20
+                }}>
                     {mounted && (
                         <motion.button
                             whileHover={{ scale: 1.15, rotate: 20 }}

@@ -22,13 +22,15 @@
 }
 
 .light {
-  --bg-primary: #f4f0ff;
-  --bg-secondary: #fbf8ff;
-  --glass-bg: rgba(147, 51, 234, 0.06);
-  --glass-border: rgba(147, 51, 234, 0.2);
+  --bg-primary: #f8f6ff;
+  --bg-secondary: #ffffff;
+  --glass-bg: rgba(147, 51, 234, 0.08);
+  /* Slightly more visible in light mode */
+  --glass-border: rgba(147, 51, 234, 0.25);
   --text-primary: #1a0033;
-  --text-secondary: #6c2bd9;
-  --glow-purple: 0 0 15px rgba(108, 43, 217, 0.3);
+  --text-secondary: #581c87;
+  /* Darker purple for better contrast */
+  --glow-purple: 0 0 15px rgba(108, 43, 217, 0.2);
 }
 
 * {
@@ -46,6 +48,8 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   overflow-x: hidden;
+  width: 100%;
+  position: relative;
   transition: background-color 0.6s ease, color 0.6s ease;
 }
 
@@ -325,6 +329,30 @@ textarea:focus {
 /* General transitions */
 .transition-all-smooth {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Mobile Utilities */
+@media (max-width: 640px) {
+  .mobile-hide {
+    display: none !important;
+  }
+
+  .mobile-stack {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mobile-text-center {
+    text-align: center !important;
+  }
+
+  .mobile-full-width {
+    width: 100% !important;
+  }
+
+  .mobile-px-4 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
 }
 
 /* Light mode overrides */

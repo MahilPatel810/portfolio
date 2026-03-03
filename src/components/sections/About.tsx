@@ -6,14 +6,24 @@ export default function About() {
     const ref = useRef(null);
     const inView = useInView(ref, { once: true, margin: '-80px' });
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
         const card = e.currentTarget;
         const rect = card.getBoundingClientRect();
-        const x = (e.clientX - rect.left - rect.width / 2) / 15;
-        const y = (e.clientY - rect.top - rect.height / 2) / 15;
+        let clientX, clientY;
+
+        if ('touches' in e) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+
+        const x = (clientX - rect.left - rect.width / 2) / 15;
+        const y = (clientY - rect.top - rect.height / 2) / 15;
         card.style.transform = `perspective(1000px) rotateX(${-y}deg) rotateY(${x}deg) scale(1.02)`;
     };
-    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
         e.currentTarget.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
     };
 
@@ -58,20 +68,23 @@ export default function About() {
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     onMouseMove={handleMouseMove}
                     onMouseLeave={handleMouseLeave}
+                    onTouchMove={handleMouseMove}
+                    onTouchEnd={handleMouseLeave}
                     style={{
-                        padding: 'clamp(30px, 5vw, 50px)',
+                        padding: 'clamp(24px, 5vw, 50px)',
                         transition: 'transform 0.15s ease, box-shadow 0.4s ease',
-                        background: 'rgba(10, 0, 28, 0.82)',
+                        background: 'var(--glass-bg)',
                         backdropFilter: 'blur(24px)',
                         WebkitBackdropFilter: 'blur(24px)',
                         borderRadius: 20,
-                        border: '1px solid rgba(147,51,234,0.3)',
-                        boxShadow: '0 0 50px rgba(108,43,217,0.12), 0 8px 40px rgba(0,0,0,0.6)',
+                        border: '1px solid var(--glass-border)',
+                        boxShadow: '0 0 50px rgba(108,43,217,0.12), 0 8px 40px rgba(0,0,0,0.4)',
                         cursor: 'default',
                         animation: 'float 5s ease-in-out infinite',
+                        touchAction: 'none'
                     }}
                 >
-                    <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 'clamp(24px, 4vw, 50px)', alignItems: 'center' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 'clamp(24px, 4vw, 50px)', alignItems: 'center' }} className="mobile-stack">
                         {/* Avatar */}
                         <motion.div
                             animate={{ boxShadow: ['0 0 20px rgba(147,51,234,0.4)', '0 0 50px rgba(147,51,234,0.8)', '0 0 20px rgba(147,51,234,0.4)'] }}
@@ -130,14 +143,18 @@ export default function About() {
                     }} />
 
                     {/* Stats */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                        gap: 20
+                    }}>
                         {stats.map((s, i) => (
                             <motion.div
                                 key={s.label}
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={inView ? { opacity: 1, scale: 1 } : {}}
                                 transition={{ delay: 0.5 + i * 0.15, duration: 0.5 }}
-                                style={{ textAlign: 'center' }}
+                                style={{ textAlign: 'center', padding: '10px' }}
                             >
                                 <div style={{
                                     fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',

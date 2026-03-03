@@ -65,14 +65,24 @@ function SkillCard({ group, index }: { group: typeof skills[0]; index: number })
     const ref = useRef(null);
     const inView = useInView(ref, { once: true, margin: '-60px' });
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
         const card = e.currentTarget;
         const rect = card.getBoundingClientRect();
-        const x = (e.clientX - rect.left - rect.width / 2) / 12;
-        const y = (e.clientY - rect.top - rect.height / 2) / 12;
+        let clientX, clientY;
+
+        if ('touches' in e) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+
+        const x = (clientX - rect.left - rect.width / 2) / 12;
+        const y = (clientY - rect.top - rect.height / 2) / 12;
         card.style.transform = `perspective(800px) rotateX(${-y}deg) rotateY(${x}deg) scale(1.03)`;
     };
-    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
         e.currentTarget.style.transform = '';
     };
 
@@ -84,6 +94,8 @@ function SkillCard({ group, index }: { group: typeof skills[0]; index: number })
             transition={{ duration: 0.7, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
+            onTouchMove={handleMouseMove}
+            onTouchEnd={handleMouseLeave}
             style={{
                 background: 'var(--glass-bg)',
                 backdropFilter: 'blur(20px)',
@@ -94,6 +106,7 @@ function SkillCard({ group, index }: { group: typeof skills[0]; index: number })
                 cursor: 'default',
                 position: 'relative',
                 overflow: 'hidden',
+                touchAction: 'none'
             }}
             whileHover={{ boxShadow: `0 0 30px ${group.color}44` }}
         >
